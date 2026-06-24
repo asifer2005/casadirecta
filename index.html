@@ -4,236 +4,287 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CasaDirecta — Web + reservas directas para casas rurales (sin comisión)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0e1411; --surface:#15201b; --surface2:#1c2a23; --border:#28392f;
-    --text:#e8f0ea; --muted:#8ba596; --accent:#34c77b; --accent2:#28a566;
-    --blue:#4a9de8; --amber:#e8a23a; --red:#e8584a; --terra:#d98b5f; --radius:14px;
-    --shadow:0 10px 30px rgba(0,0,0,.4);
+    --bg:#0c100e; --surface:#141b18; --surface2:#1b2420; --surface3:#222e28; --border:#283631;
+    --text:#eef3f0; --muted:#9fb3aa; --faint:#7b8c84;
+    --accent:#2fb574; --accent-h:#36c47f; --accent-ink:#04130b; --accent-soft:rgba(47,181,116,.12);
+    --blue:#5aa6e6; --amber:#e0a64a; --red:#e2685c;
+    --r:10px; --r-lg:16px;
+    --shadow:0 16px 40px -12px rgba(0,0,0,.55);
+    --sp:16px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
-  button{font-family:inherit;cursor:pointer}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:"Inter","Inter var",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    font-feature-settings:"cv02","cv03","cv04","ss01"}
+  button{font-family:inherit;cursor:pointer;color:inherit}
   input,select,textarea{font-family:inherit}
-  .app{display:flex;min-height:100vh}
   svg{display:block}
-  .sidebar{width:244px;background:var(--surface);border-right:1px solid var(--border);
-    display:flex;flex-direction:column;padding:18px 14px;position:sticky;top:0;height:100vh}
-  .brand{display:flex;align-items:center;gap:10px;padding:6px 8px 18px}
-  .brand .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--terra));
-    display:flex;align-items:center;justify-content:center;font-weight:800;color:#06170e;font-size:18px}
-  .brand b{font-size:18px;letter-spacing:-.3px}
-  .nav{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+  .tnum{font-variant-numeric:tabular-nums}
+  .ic{display:inline-block;vertical-align:-2px;width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .btn .ic{width:15px;height:15px}
+  .kpi .k .ic{width:14px;height:14px;color:var(--faint)}
+  .card .head h2 .ic{width:16px;height:16px;color:var(--muted);vertical-align:-3px;margin-right:2px}
+  .value .ic{color:var(--accent);width:16px;height:16px;vertical-align:-3px}
+  ::selection{background:var(--accent-soft);color:var(--text)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+  .app{display:flex;min-height:100vh}
+  /* ---------- Sidebar ---------- */
+  .sidebar{width:248px;background:var(--surface);border-right:1px solid var(--border);
+    display:flex;flex-direction:column;padding:20px 16px;position:sticky;top:0;height:100vh}
+  .brand{display:flex;align-items:center;gap:11px;padding:6px 8px 22px}
+  .brand .logo{width:34px;height:34px;border-radius:9px;background:var(--accent);
+    display:flex;align-items:center;justify-content:center;color:var(--accent-ink)}
+  .brand .logo svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2.2}
+  .brand b{font-size:17px;letter-spacing:-.35px;font-weight:700}
+  .nav{display:flex;flex-direction:column;gap:3px;margin-top:2px}
   .nav button{display:flex;align-items:center;gap:11px;background:none;border:none;color:var(--muted);
-    padding:11px 12px;border-radius:10px;font-size:14.5px;font-weight:600;text-align:left;width:100%}
+    padding:10px 12px;border-radius:9px;font-size:14px;font-weight:500;text-align:left;width:100%;transition:background .12s,color .12s}
   .nav button:hover{background:var(--surface2);color:var(--text)}
-  .nav button.active{background:rgba(52,199,123,.13);color:var(--accent)}
-  .nav button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
-  .nav .badge{margin-left:auto;background:var(--red);color:#fff;font-size:11px;font-weight:800;
+  .nav button.active{background:var(--accent-soft);color:var(--accent);font-weight:600;position:relative}
+  .nav button.active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
+  .nav button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9;flex-shrink:0}
+  .nav .badge{margin-left:auto;background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:700;
     min-width:19px;height:19px;border-radius:99px;display:flex;align-items:center;justify-content:center;padding:0 5px}
-  .plan-badge{margin-top:auto;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:13px}
-  .plan-badge .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
-  .plan-badge .pname{font-weight:800;font-size:16px;margin:2px 0 8px;display:flex;align-items:center;gap:6px}
-  .plan-badge .pname .pro{background:linear-gradient(135deg,var(--accent),var(--terra));color:#06170e;font-size:10px;padding:1px 7px;border-radius:99px}
-  .plan-badge small{display:block;color:var(--muted);margin-top:2px;font-size:11.5px}
-  .plan-badge button{margin-top:10px;width:100%;background:var(--accent);color:#06170e;border:none;
-    padding:8px;border-radius:9px;font-weight:800;font-size:13px}
+  .plan-badge{margin-top:auto;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px}
+  .plan-badge .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--faint);font-weight:600}
+  .plan-badge .pname{font-weight:700;font-size:15px;margin:3px 0 8px;display:flex;align-items:center;gap:7px}
+  .plan-badge .pname .pro{background:var(--accent);color:var(--accent-ink);font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px;letter-spacing:.5px}
+  .plan-badge small{display:block;color:var(--faint);margin-top:2px;font-size:11.5px;line-height:1.4}
+  .plan-badge button{margin-top:11px;width:100%;background:var(--accent);color:var(--accent-ink);border:none;
+    padding:9px;border-radius:8px;font-weight:600;font-size:13px;transition:background .12s}
+  .plan-badge button:hover{background:var(--accent-h)}
+  /* ---------- Main ---------- */
   .main{flex:1;min-width:0;display:flex;flex-direction:column}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 26px;
-    border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(14,20,17,.85);
-    backdrop-filter:blur(8px);z-index:20}
-  .topbar h1{font-size:20px;letter-spacing:-.4px}
-  .topbar .sub{color:var(--muted);font-size:13px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;gap:16px;
+    border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(12,16,14,.82);
+    backdrop-filter:blur(12px);z-index:20}
+  .topbar h1{font-size:20px;letter-spacing:-.5px;font-weight:700}
+  .topbar .sub{color:var(--muted);font-size:13px;margin-top:1px}
   .topbar-actions{display:flex;gap:10px;align-items:center}
-  .iconbtn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);width:40px;height:40px;
-    border-radius:10px;display:flex;align-items:center;justify-content:center}
-  .iconbtn:hover{color:var(--text);border-color:var(--muted)}
-  .iconbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2}
-  .content{padding:24px 26px 90px;max-width:1120px;width:100%}
-  .btn{background:var(--accent);color:#06170e;border:none;padding:10px 16px;border-radius:10px;
-    font-weight:800;font-size:14px;display:inline-flex;align-items:center;gap:7px}
-  .btn:hover{background:var(--accent2)}
+  .iconbtn{background:transparent;border:1px solid var(--border);color:var(--muted);width:40px;height:40px;
+    border-radius:9px;display:flex;align-items:center;justify-content:center;transition:.12s}
+  .iconbtn:hover{color:var(--text);border-color:var(--faint);background:var(--surface2)}
+  .iconbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9}
+  .content{padding:26px 28px 96px;max-width:1140px;width:100%}
+  /* ---------- Buttons ---------- */
+  .btn{background:var(--accent);color:var(--accent-ink);border:none;padding:10px 16px;border-radius:9px;
+    font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:7px;line-height:1.1;transition:background .12s,border-color .12s,opacity .12s}
+  .btn:hover{background:var(--accent-h)}
   .btn.ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
-  .btn.ghost:hover{border-color:var(--muted)}
-  .btn.blue{background:var(--blue);color:#fff}
-  .btn.terra{background:var(--terra);color:#1a0e06}
-  .btn.sm{padding:7px 12px;font-size:13px}
-  .btn.danger{background:rgba(232,88,74,.15);color:var(--red);border:1px solid rgba(232,88,74,.4)}
-  .btn:disabled{opacity:.5;cursor:not-allowed}
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
-  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
-  .kpi .k{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:7px}
-  .kpi .v{font-size:29px;font-weight:800;letter-spacing:-1px;margin-top:6px}
-  .kpi .d{font-size:12px;margin-top:4px;color:var(--muted)}
+  .btn.ghost:hover{border-color:var(--faint);background:var(--surface3)}
+  .btn.blue{background:transparent;color:var(--blue);border:1px solid color-mix(in srgb,var(--blue) 45%,transparent)}
+  .btn.blue:hover{background:color-mix(in srgb,var(--blue) 14%,transparent)}
+  .btn.terra{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+  .btn.sm{padding:7px 12px;font-size:13px;border-radius:8px}
+  .btn.danger{background:transparent;color:var(--red);border:1px solid color-mix(in srgb,var(--red) 42%,transparent)}
+  .btn.danger:hover{background:color-mix(in srgb,var(--red) 12%,transparent)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  /* ---------- KPIs ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;transition:border-color .14s}
+  .kpi:hover{border-color:var(--surface3)}
+  .kpi:first-child{background:linear-gradient(180deg,var(--accent-soft),transparent 55%)}
+  .kpi .k{font-size:12px;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:7px}
+  .kpi .v{font-size:31px;font-weight:700;letter-spacing:-1.4px;margin-top:10px;font-variant-numeric:tabular-nums;color:var(--text)}
+  .kpi:first-child .v{color:var(--accent)}
+  .kpi .d{font-size:12px;margin-top:6px;color:var(--faint)}
   .kpi .d.good{color:var(--accent)}
   .kpi .d.bad{color:var(--amber)}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:18px}
-  .card .head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap}
-  .card .head h2{font-size:16px;letter-spacing:-.3px}
-  .card .body{padding:6px 6px}
-  .empty{padding:40px 20px;text-align:center;color:var(--muted)}
-  .empty .ico{font-size:34px;margin-bottom:8px}
-  .empty .btn{margin-top:14px}
-  .pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap;display:inline-block}
-  .pill.solic{background:rgba(232,162,58,.15);color:var(--amber)}
-  .pill.conf{background:rgba(52,199,123,.15);color:var(--accent)}
-  .pill.canc{background:rgba(232,88,74,.15);color:var(--red)}
-  .pill.bloq{background:rgba(139,165,150,.18);color:var(--muted)}
+  /* ---------- Card ---------- */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:18px;overflow:hidden}
+  .card .head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap}
+  .card .head h2{font-size:15px;letter-spacing:-.2px;font-weight:650}
+  .card .body{padding:8px 8px}
+  .empty{padding:44px 20px;text-align:center;color:var(--muted)}
+  .empty .ico{color:var(--faint);margin-bottom:12px;display:flex;justify-content:center}
+  .empty .ico svg{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:1.6}
+  .empty .btn{margin-top:16px}
+  /* ---------- Pills ---------- */
+  .pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;letter-spacing:.1px}
+  .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+  .pill.nodot::before{display:none}
+  .pill.solic{background:rgba(224,166,74,.13);color:var(--amber)}
+  .pill.conf{background:rgba(47,181,116,.14);color:var(--accent)}
+  .pill.canc{background:rgba(226,104,92,.14);color:var(--red)}
+  .pill.bloq{background:var(--surface3);color:var(--muted)}
+  /* ---------- Table ---------- */
   table{width:100%;border-collapse:collapse}
-  th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);
-    padding:11px 14px;border-bottom:1px solid var(--border)}
-  td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:14px;vertical-align:middle}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--faint);font-weight:600;
+    padding:12px 16px;border-bottom:1px solid var(--border)}
+  td{padding:13px 16px;border-bottom:1px solid var(--border);font-size:14px;vertical-align:middle}
   tr:last-child td{border-bottom:none}
+  tbody tr{transition:background .1s}
   tr:hover td{background:var(--surface2)}
-  .avatar{width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);
-    display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:var(--accent)}
-  /* Modal */
-  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);z-index:100;
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 28%,transparent);
+    display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:12.5px;color:var(--accent)}
+  /* ---------- Modal ---------- */
+  .modal-bg{position:fixed;inset:0;background:rgba(4,8,6,.66);backdrop-filter:blur(4px);z-index:100;
     display:none;align-items:center;justify-content:center;padding:20px}
   .modal-bg.show{display:flex}
   .modal{background:var(--surface);border:1px solid var(--border);border-radius:18px;width:100%;
-    max-width:480px;box-shadow:var(--shadow);max-height:92vh;overflow:auto}
-  .modal.wide{max-width:760px}
-  .modal .mhead{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-  .modal .mhead h3{font-size:18px}
+    max-width:480px;box-shadow:var(--shadow);max-height:92vh;overflow:auto;animation:pop .18s ease-out}
+  @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+  .modal.wide{max-width:780px}
+  .modal .mhead{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .modal .mhead h3{font-size:17px;font-weight:650;letter-spacing:-.2px}
   .modal .mbody{padding:20px 22px}
-  .modal .mfoot{padding:16px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
-  .x{background:none;border:none;color:var(--muted);font-size:22px;line-height:1}
-  label{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin:13px 0 6px}
+  .modal .mfoot{padding:16px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+  .x{background:none;border:none;color:var(--faint);font-size:24px;line-height:1;width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;transition:.12s}
+  .x:hover{color:var(--text);background:var(--surface2)}
+  label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:14px 0 6px}
   label:first-child{margin-top:0}
   .field,input[type=text],input[type=tel],input[type=date],input[type=number],input[type=email],select,textarea{
-    width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;
-    padding:11px 13px;color:var(--text);font-size:14.5px}
-  .field:focus,input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
-  textarea{resize:vertical;min-height:70px}
+    width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:9px;
+    padding:11px 13px;color:var(--text);font-size:14px;transition:border-color .12s,box-shadow .12s}
+  .field:focus,input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  textarea{resize:vertical;min-height:70px;line-height:1.5}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .hint{font-size:12.5px;color:var(--faint);margin-top:6px;line-height:1.5}
   .err{color:var(--red);font-size:12.5px;margin-top:8px;display:none}
   .ok{color:var(--accent);font-size:12.5px;margin-top:8px;display:none}
-  /* Pricing */
+  /* ---------- Pricing ---------- */
   .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:4px}
-  .price{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;position:relative;display:flex;flex-direction:column}
-  .price.feat{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .price{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px 24px;position:relative;display:flex;flex-direction:column}
+  .price.feat{border-color:color-mix(in srgb,var(--accent) 55%,transparent);background:linear-gradient(180deg,var(--accent-soft),transparent 40%)}
   .price .tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--accent);
-    color:#06170e;font-size:11px;font-weight:800;padding:3px 12px;border-radius:99px}
-  .price h3{font-size:17px}
-  .price .amt{font-size:38px;font-weight:800;letter-spacing:-1.5px;margin:10px 0 2px}
-  .price .amt span{font-size:15px;color:var(--muted);font-weight:600}
-  .price ul{list-style:none;margin:16px 0;display:flex;flex-direction:column;gap:9px;flex:1}
-  .price li{font-size:13.5px;display:flex;gap:9px;align-items:flex-start;color:#cbd9d0}
-  .price li .c{color:var(--accent);font-weight:800}
-  .price li.off{color:#5a6b62}
+    color:var(--accent-ink);font-size:10.5px;font-weight:700;padding:4px 13px;border-radius:99px;letter-spacing:.4px}
+  .price h3{font-size:16px;font-weight:650}
+  .price .amt{font-size:38px;font-weight:700;letter-spacing:-1.8px;margin:12px 0 2px;font-variant-numeric:tabular-nums}
+  .price .amt span{font-size:14px;color:var(--faint);font-weight:500;letter-spacing:0}
+  .price ul{list-style:none;margin:18px 0;display:flex;flex-direction:column;gap:11px;flex:1}
+  .price li{font-size:13.5px;display:flex;gap:10px;align-items:flex-start;color:var(--muted)}
+  .price li .c{color:var(--accent);font-weight:700;flex-shrink:0}
+  .price li.off{color:var(--faint)}
+  .price li.off .c{color:var(--faint)}
   .price .btn{width:100%;justify-content:center;margin-top:6px}
-  .value{background:linear-gradient(120deg,rgba(52,199,123,.12),rgba(217,139,95,.08));
-    border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:22px;
-    display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-  .value .big{font-size:15px;font-weight:700}
-  .value .big b{color:var(--accent)}
+  /* ---------- Value banner ---------- */
+  .value{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:16px 20px;margin-bottom:22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;position:relative}
+  .value::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--accent)}
+  .value .big{font-size:14px;font-weight:500;color:var(--muted);padding-left:8px}
+  .value .big b{color:var(--text);font-weight:650}
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);
-    background:var(--surface2);border:1px solid var(--border);padding:13px 20px;border-radius:12px;
-    box-shadow:var(--shadow);font-size:14px;font-weight:600;z-index:300;transition:transform .3s;display:flex;gap:10px;align-items:center}
+    background:var(--surface3);border:1px solid var(--border);padding:12px 18px;border-radius:11px;
+    box-shadow:var(--shadow);font-size:13.5px;font-weight:500;z-index:300;transition:transform .28s cubic-bezier(.2,.8,.3,1);display:flex;gap:9px;align-items:center}
   .toast.show{transform:translateX(-50%) translateY(0)}
-  .paywall{background:rgba(232,162,58,.1);border:1px solid rgba(232,162,58,.4);border-radius:12px;
-    padding:14px 16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-  .paywall b{color:var(--amber)}
+  .paywall{background:rgba(224,166,74,.08);border:1px solid color-mix(in srgb,var(--amber) 32%,transparent);border-radius:11px;
+    padding:13px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+  .paywall b{color:var(--amber);font-weight:600}
   .lock-card{position:relative;overflow:hidden}
-  .lock-ov{position:absolute;inset:0;background:rgba(14,20,17,.82);backdrop-filter:blur(3px);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;z-index:5}
-  .lock-ov .lk{font-size:30px}
-  .lock-ov p{max-width:360px;color:var(--muted);font-size:13.5px}
-  /* Calendar */
+  .lock-ov{position:absolute;inset:0;background:rgba(12,16,14,.86);backdrop-filter:blur(3px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px;z-index:5}
+  .lock-ov .lk{color:var(--accent);display:flex}
+  .lock-ov .lk svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.8}
+  .lock-ov b{font-size:15px;font-weight:650}
+  .lock-ov p{max-width:360px;color:var(--muted);font-size:13px}
+  /* ---------- Calendar ---------- */
   .calwrap{display:flex;gap:18px;flex-wrap:wrap}
   .calmain{flex:1;min-width:300px}
-  .calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;flex-wrap:wrap}
-  .calhead .mtitle{font-size:18px;font-weight:800;text-transform:capitalize;min-width:170px;text-align:center}
+  .calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+  .calhead .mtitle{font-size:17px;font-weight:650;text-transform:capitalize;min-width:170px;text-align:center;letter-spacing:-.2px}
   .calnav{display:flex;gap:8px;align-items:center}
-  .calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-  .calgrid .dow{text-align:center;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;padding:6px 0}
+  .calnav .btn.ghost.sm{padding:7px 9px}
+  .calnav .btn .ic{width:16px;height:16px}
+  .calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .calgrid .dow{text-align:center;font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--faint);font-weight:600;padding:6px 0}
   .day{aspect-ratio:1/1;border-radius:9px;border:1px solid var(--border);background:var(--surface2);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-weight:600;
-    position:relative;cursor:pointer;transition:transform .08s}
-  .day:hover{transform:scale(1.05);border-color:var(--muted)}
-  .day.out{opacity:.25;cursor:default;background:transparent;border-color:transparent}
+    display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-weight:500;
+    position:relative;cursor:pointer;transition:transform .1s,border-color .1s,background .1s}
+  .day:hover{transform:translateY(-1px);border-color:var(--faint)}
+  .day.out{opacity:.2;cursor:default;background:transparent;border-color:transparent}
   .day.out:hover{transform:none}
-  .day.today{box-shadow:inset 0 0 0 2px var(--blue)}
+  .day.today{box-shadow:inset 0 0 0 1.5px var(--text)}
   .day.libre{background:var(--surface2)}
-  .day.reservado{background:rgba(52,199,123,.22);border-color:var(--accent);color:#bff0d4}
-  .day.solic{background:rgba(232,162,58,.2);border-color:var(--amber);color:#ffe2b0}
-  .day.bloq{background:rgba(139,165,150,.14);border-color:var(--muted);color:var(--muted)}
-  .day.ext{background:rgba(74,157,232,.16);border-color:var(--blue);color:#bcdcf7}
-  .day .pr{font-size:9.5px;font-weight:600;color:var(--muted);margin-top:1px}
-  .day.reservado .pr,.day.solic .pr{color:inherit;opacity:.85}
+  .day.reservado{background:rgba(47,181,116,.18);border-color:color-mix(in srgb,var(--accent) 45%,transparent);color:#a8e7c4;font-weight:600}
+  .day.solic{background:rgba(224,166,74,.16);border-color:color-mix(in srgb,var(--amber) 45%,transparent);color:#f1d29a;font-weight:600}
+  .day.bloq{background:var(--surface3);border-color:var(--border);color:var(--faint)}
+  .day.ext{background:rgba(90,166,230,.14);border-color:color-mix(in srgb,var(--blue) 42%,transparent);color:#b6d6f3;font-weight:600}
+  .day .pr{font-size:9.5px;font-weight:500;color:var(--faint);margin-top:2px}
+  .day.reservado .pr,.day.solic .pr{color:inherit;opacity:.8}
   .day.sel{box-shadow:inset 0 0 0 2px var(--accent)}
   .day.inrange{outline:2px dashed var(--accent);outline-offset:-2px}
-  .calside{width:280px;flex-shrink:0}
-  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:12px;color:var(--muted)}
-  .legend span{display:flex;align-items:center;gap:6px}
-  .legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
-  /* Public preview */
-  .pub{background:#faf7f2;color:#2a2520;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
-  .pub .hero{position:relative;height:230px;background-size:cover;background-position:center;display:flex;align-items:flex-end}
-  .pub .hero .ov{position:absolute;inset:0;background:linear-gradient(transparent,rgba(0,0,0,.65))}
-  .pub .hero .htxt{position:relative;padding:20px 24px;color:#fff}
-  .pub .hero h2{font-size:26px;letter-spacing:-.5px}
-  .pub .hero .loc{font-size:13px;opacity:.9;display:flex;align-items:center;gap:5px;margin-top:4px}
-  .pub .pbody{padding:22px 24px}
-  .pub .desc{font-size:14px;color:#4a4138;white-space:pre-wrap}
-  .pub .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0}
-  .pub .gallery img{width:100%;height:80px;object-fit:cover;border-radius:8px;background:#e8e0d4}
-  .pub .feats{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
-  .pub .feats span{background:#efe8dd;color:#5a4f42;font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:99px}
+  .calside{width:288px;flex-shrink:0}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;font-size:12px;color:var(--muted)}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .legend i{width:11px;height:11px;border-radius:4px;display:inline-block;border:1px solid transparent}
+  /* ---------- Public preview (warm light theme for guest page) ---------- */
+  .pub{background:#f7f3ec;color:#2b2620;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
+  .pub .hero{position:relative;height:240px;background-size:cover;background-position:center;display:flex;align-items:flex-end}
+  .pub .hero .ov{position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,.62))}
+  .pub .hero .htxt{position:relative;padding:22px 26px;color:#fff}
+  .pub .hero h2{font-size:27px;letter-spacing:-.6px;font-weight:700}
+  .pub .hero .loc{font-size:13px;opacity:.92;display:flex;align-items:center;gap:6px;margin-top:5px}
+  .pub .hero .loc svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+  .pub .pbody{padding:24px 26px}
+  .pub .desc{font-size:14.5px;line-height:1.65;color:#4d4438;white-space:pre-wrap}
+  .pub .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0}
+  .pub .gallery img{width:100%;height:84px;object-fit:cover;border-radius:9px;background:#e8e0d4}
+  .pub .feats{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+  .pub .feats span{background:#ece4d8;color:#5e5345;font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:99px}
   .pub .seasons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
-  .pub .seasons .s{background:#efe8dd;border-radius:10px;padding:12px 14px;text-align:center}
-  .pub .seasons .s .nm{font-size:12px;color:#7a6e5e;font-weight:700}
-  .pub .seasons .s .pp{font-size:22px;font-weight:800;color:#2a2520}
-  .pub .seasons .s .pp span{font-size:12px;color:#7a6e5e;font-weight:600}
-  .pub h3{font-size:15px;margin:20px 0 8px;color:#2a2520}
-  .pub .bookbar{background:#2a3b2f;color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .pub .seasons .s{background:#ece4d8;border-radius:11px;padding:14px;text-align:center}
+  .pub .seasons .s .nm{font-size:11.5px;color:#857862;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .pub .seasons .s .pp{font-size:23px;font-weight:700;color:#2b2620;margin-top:4px;font-variant-numeric:tabular-nums}
+  .pub .seasons .s .pp span{font-size:12px;color:#857862;font-weight:500}
+  .pub h3{font-size:15px;margin:22px 0 8px;color:#2b2620;font-weight:650}
+  .pub .bookbar{background:#243a2c;color:#fff;padding:17px 26px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
   .pub .bookbar .pp{font-size:13px;opacity:.85}
-  .pub .bookbar .pp b{font-size:20px;color:#7fe0a8}
-  .pub .bookbar button{background:var(--accent);color:#06170e;border:none;padding:11px 20px;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer}
-  .pub .wm{text-align:center;font-size:11.5px;color:#9a8f7e;padding:10px;background:#efe8dd}
+  .pub .bookbar .pp b{font-size:21px;color:#7fe0a8;font-weight:700}
+  .pub .bookbar button{background:var(--accent);color:var(--accent-ink);border:none;padding:11px 22px;border-radius:9px;font-weight:600;font-size:14px;cursor:pointer}
+  .pub .bookbar button:hover{background:var(--accent-h)}
+  .pub .wm{text-align:center;font-size:11.5px;color:#9c907c;padding:11px;background:#ece4d8}
   .seg{display:flex;gap:8px;flex-wrap:wrap}
   .tag-edit{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
   .tag-edit .t{background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:5px 10px;font-size:13px;display:flex;align-items:center;gap:7px}
-  .tag-edit .t button{background:none;border:none;color:var(--muted);font-size:15px;line-height:1}
+  .tag-edit .t button{background:none;border:none;color:var(--faint);font-size:15px;line-height:1}
   .mobilenav{display:none}
-  .booking-rowinfo{flex:1;min-width:0}
-  .booking-rowinfo b{font-size:14.5px}
-  .booking-rowinfo .svc{font-size:12.5px;color:var(--muted)}
+  .booking-rowinfo{flex:1;min-width:120px}
+  .booking-rowinfo b{font-size:14.5px;font-weight:600}
+  .booking-rowinfo .svc{font-size:12.5px;color:var(--faint);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  @media(max-width:560px){
+    .booking-rowinfo{flex:1 1 100%;min-width:0}
+    .booking-rowinfo .svc{white-space:normal}
+  }
   @media(max-width:920px){
     .sidebar{display:none}
     .kpis{grid-template-columns:repeat(2,1fr)}
     .pricing{grid-template-columns:1fr}
     .calside{width:100%}
-    .content{padding:18px 14px 90px}
-    .topbar{padding:14px 16px}
+    .content{padding:20px 16px 96px}
+    .topbar{padding:14px 18px}
     .pub .gallery{grid-template-columns:repeat(2,1fr)}
     .pub .seasons{grid-template-columns:1fr}
-    .mobilenav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--surface);
-      border-top:1px solid var(--border);z-index:50;justify-content:space-around;padding:8px 0}
-    .mobilenav button{background:none;border:none;color:var(--muted);font-size:10.5px;font-weight:700;
-      display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 8px;position:relative}
+    .mobilenav{display:flex;position:fixed;bottom:0;left:0;right:0;background:rgba(20,27,24,.92);backdrop-filter:blur(12px);
+      border-top:1px solid var(--border);z-index:50;justify-content:space-around;padding:9px 0 calc(9px + env(safe-area-inset-bottom))}
+    .mobilenav button{background:none;border:none;color:var(--faint);font-size:10.5px;font-weight:500;
+      display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 8px;position:relative;transition:color .12s}
     .mobilenav button.active{color:var(--accent)}
-    .mobilenav svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
-    .mobilenav .badge{position:absolute;top:0;right:4px;background:var(--red);color:#fff;font-size:9px;
-      font-weight:800;min-width:15px;height:15px;border-radius:99px;display:flex;align-items:center;justify-content:center}
+    .mobilenav svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9}
+    .mobilenav .badge{position:absolute;top:-2px;right:6px;background:var(--accent);color:var(--accent-ink);font-size:9px;
+      font-weight:700;min-width:15px;height:15px;border-radius:99px;display:flex;align-items:center;justify-content:center}
   }
-  @media(max-width:520px){.kpis{grid-template-columns:1fr 1fr}.row2,.row3{grid-template-columns:1fr}}
+  @media(max-width:520px){.kpis{grid-template-columns:1fr 1fr}.row2,.row3{grid-template-columns:1fr}
+    .topbar h1{font-size:17px}.kpi .v{font-size:26px}}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="brand"><div class="logo">C</div><b>CasaDirecta</b></div>
+    <div class="brand"><div class="logo"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V20h14v-9.5"/><path d="M9.5 20v-5h5v5"/></svg></div><b>CasaDirecta</b></div>
     <nav class="nav" id="nav"></nav>
     <div class="plan-badge">
       <div class="lbl">Plan actual</div>
       <div class="pname" id="planName">Free</div>
       <small id="usageText">1 alojamiento · con marca</small>
-      <button id="upgradeBtn">Pasar a Pro →</button>
+      <button id="upgradeBtn">Pasar a Pro <svg class="ic" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
     </div>
   </aside>
 
@@ -266,6 +317,33 @@ const IC={
 };
 const NAVITEMS=[['dashboard','Panel'],['calendario','Calendario'],['reservas','Reservas'],['web','Mi web'],['precios','Precios y temporadas'],['suscripcion','Suscripción']];
 const MNAVITEMS=[['dashboard','Panel'],['calendario','Calendario'],['reservas','Reservas'],['web','Web'],['suscripcion','Plan']];
+/* Iconos de contenido (línea, heredan color). Uso: I('euro'), opcional clase con I('lock','muted') */
+const ICONS={
+  euro:'<path d="M14 5.5A6 6 0 0 0 6.5 11M14 18.5A6 6 0 0 1 6.5 13"/><line x1="3" y1="10" x2="12" y2="10"/><line x1="3" y1="14" x2="11" y2="14"/>',
+  trend:'<polyline points="3 16 9 10 13 14 21 6"/><polyline points="15 6 21 6 21 12"/>',
+  bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  chart:'<line x1="4" y1="20" x2="20" y2="20"/><rect x="5" y="12" width="3" height="6"/><rect x="10.5" y="8" width="3" height="10"/><rect x="16" y="4" width="3" height="14"/>',
+  bolt:'<polygon points="13 2 4 14 11 14 10 22 19 10 12 10 13 2"/>',
+  wallet:'<path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v3"/><path d="M3 7v10a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-3"/><path d="M21 10h-4a2 2 0 0 0 0 4h4z"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/>',
+  link:'<path d="M9 15l6-6"/><path d="M11 6l1-1a4 4 0 0 1 6 6l-2 2"/><path d="M13 18l-1 1a4 4 0 0 1-6-6l2-2"/>',
+  external:'<path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+  lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  sync:'<path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><polyline points="21 3 21 8 16 8"/><polyline points="3 21 3 16 8 16"/>',
+  check:'<polyline points="20 6 9 17 4 12"/>',
+  x:'<line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/>',
+  chevL:'<polyline points="15 6 9 12 15 18"/>',
+  chevR:'<polyline points="9 6 15 12 9 18"/>',
+  plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+  arrow:'<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+  pin:'<path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/>',
+  send:'<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>',
+  download:'<path d="M12 3v12"/><polyline points="7 11 12 16 17 11"/><line x1="5" y1="20" x2="19" y2="20"/>',
+  copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>'
+};
+function I(n,cls){return `<svg class="ic ${cls||''}" viewBox="0 0 24 24">${ICONS[n]||''}</svg>`;}
 
 /* ---------------- Estado / persistencia ---------------- */
 const LS='casadirecta_v2';
@@ -333,7 +411,10 @@ const fmtDay=iso=>parseISO(iso).toLocaleDateString('es-ES',{day:'numeric',month:
 const fmtDayFull=iso=>parseISO(iso).toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
 const initials=n=>n.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
 const STLABEL={solic:'Solicitada',conf:'Confirmada',canc:'Cancelada'};
-function toast(msg,icon='✓'){const t=$('#toast');t.innerHTML=`<span>${icon}</span> ${msg}`;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
+function toast(msg,icon){
+  /* icon: nombre de ICONS, '' para ninguno, o por defecto check */
+  let ico = icon==='' ? '' : (ICONS[icon]?`<svg class="ic" viewBox="0 0 24 24">${ICONS[icon]}</svg>`:`<svg class="ic" viewBox="0 0 24 24">${ICONS.check}</svg>`);
+  const t=$('#toast');t.innerHTML=`${ico}${msg}`;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
 
 /* temporada y precio por noche */
 function seasonForDate(iso){const m=parseISO(iso).getMonth()+1;const id=db.seasonByMonth[m]||'media';return db.seasons.find(s=>s.id===id)||db.seasons[0];}
@@ -424,28 +505,28 @@ function renderDashboard(){
   const pendingDep=db.bookings.filter(b=>b.status!=='canc'&&b.checkout>=t&&!b.depositPaid);
   const pendingDepAmt=pendingDep.reduce((s,b)=>s+depositAmountFor(b),0);
 
-  let html=`<div class="value"><div class="big">🏡 Cada reserva directa te ahorra la comisión de Booking/Airbnb (~16%). Llevas <b>${commissionSaved}€</b> ahorrados este año vendiendo directo.</div></div>
+  let html=`<div class="value"><div class="big">${I('trend')} Cada reserva directa te ahorra la comisión de Booking/Airbnb (~16%). Llevas <b>${commissionSaved}€</b> ahorrados este año vendiendo directo.</div></div>
   <div class="kpis">
-    <div class="kpi"><div class="k">💰 Ingresos confirmados ${year}</div><div class="v">${revenue}€</div><div class="d">${confYear.length} reserva(s)</div></div>
-    <div class="kpi"><div class="k">💸 Comisión ahorrada</div><div class="v">${commissionSaved}€</div><div class="d good">vs vender por OTAs (16%)</div></div>
-    <div class="kpi"><div class="k">🔔 Solicitudes pendientes</div><div class="v">${solic.length}</div><div class="d ${solic.length?'bad':'good'}">${solic.length?'requieren respuesta':'todo al día'}</div></div>
-    <div class="kpi"><div class="k">📊 Ocupación 30 días</div><div class="v">${occPct}%</div><div class="d">${occ} de 30 noches</div></div>
+    <div class="kpi"><div class="k">${I('euro')} Ingresos confirmados ${year}</div><div class="v">${revenue}€</div><div class="d">${confYear.length} reserva(s)</div></div>
+    <div class="kpi"><div class="k">${I('trend')} Comisión ahorrada</div><div class="v">${commissionSaved}€</div><div class="d good">vs vender por OTAs (16%)</div></div>
+    <div class="kpi"><div class="k">${I('bell')} Solicitudes pendientes</div><div class="v">${solic.length}</div><div class="d ${solic.length?'bad':'good'}">${solic.length?'requieren respuesta':'todo al día'}</div></div>
+    <div class="kpi"><div class="k">${I('chart')} Ocupación 30 días</div><div class="v">${occPct}%</div><div class="d">${occ} de 30 noches</div></div>
   </div>`;
 
   if(solic.length){
-    html+=`<div class="card"><div class="head"><h2>⚡ ${solic.length} solicitud(es) por confirmar</h2><button class="btn sm" onclick="setView('reservas')">Revisar →</button></div><div class="body">`;
+    html+=`<div class="card"><div class="head"><h2>${I('bolt')} ${solic.length} solicitud(es) por confirmar</h2><button class="btn sm" onclick="setView('reservas')">Revisar ${I('arrow')}</button></div><div class="body">`;
     html+=solic.slice(0,3).map(bookingRow).join('');
     html+=`</div></div>`;
   }
 
   if(pendingDep.length){
-    html+=`<div class="card"><div class="head"><h2>💶 Señales pendientes de cobrar</h2><span class="hint" style="margin:0">${pendingDepAmt}€ por asegurar</span></div><div class="body">`;
+    html+=`<div class="card"><div class="head"><h2>${I('wallet')} Señales pendientes de cobrar</h2><span class="hint" style="margin:0">${pendingDepAmt}€ por asegurar</span></div><div class="body">`;
     html+=pendingDep.slice(0,3).map(b=>`<div style="display:flex;align-items:center;gap:14px;padding:12px 14px;flex-wrap:wrap">
       <span class="avatar">${initials(b.guest)}</span>
       <div class="booking-rowinfo"><b>${b.guest}</b><div class="svc">${fmtDay(b.checkin)} → ${fmtDay(b.checkout)} · señal ${depositAmountFor(b)}€</div></div>
-      <span class="pill solic">Sin señal</span>
-      <button class="btn sm" onclick="markDepositPaid(${b.id})">✓ Cobrada</button>
-      <button class="btn ghost sm" onclick="openBookingModal(${b.id})">⋯</button></div>`).join('');
+      <span class="pill solic nodot">Sin señal</span>
+      <button class="btn sm" onclick="markDepositPaid(${b.id})">${I('check')} Cobrada</button>
+      <button class="btn ghost sm" onclick="openBookingModal(${b.id})">Ver</button></div>`).join('');
     html+=`</div></div>`;
   }
 
@@ -456,17 +537,18 @@ function renderDashboard(){
       <span class="avatar">${initials(nextArrival.guest)}</span>
       <div class="booking-rowinfo"><b>${nextArrival.guest}</b><div class="svc">Entrada ${fmtDayFull(nextArrival.checkin)} · ${nights} noche(s) · ${nextArrival.guests} huésped(es)</div></div>
       <span class="pill conf">Confirmada</span><b>${nextArrival.total}€</b></div>`;
-  } else html+=emptyBox('🗓️','No hay próximas llegadas confirmadas.','+ Nueva reserva','openBookingModal()');
+  } else html+=emptyBox('cal','No hay próximas llegadas confirmadas.','Nueva reserva','openBookingModal()');
   html+=`</div></div>`;
 
   html+=`<div class="card"><div class="head"><h2>Comparte tu web de reservas</h2></div><div class="body" style="padding:16px 18px">
-    <p class="hint" style="margin:0 0 10px">Tu página pública (galería, precios y solicitud de reserva) lista para enviar a clientes y poner en tu Instagram. Reservas directas = 0% de comisión.</p>
-    <div class="seg"><button class="btn sm" onclick="setView('web')">Ver y editar mi web</button><button class="btn ghost sm" onclick="openPublicSite()">👁️ Previsualizar página</button></div>
+    <p class="hint" style="margin:0 0 12px">Tu página pública (galería, precios y solicitud de reserva) lista para enviar a clientes y poner en tu Instagram. Reservas directas = 0% de comisión.</p>
+    <div class="seg"><button class="btn sm" onclick="setView('web')">Ver y editar mi web</button><button class="btn ghost sm" onclick="openPublicSite()">${I('eye')} Previsualizar página</button></div>
   </div></div>`;
   $('#content').innerHTML=html;
 }
 function emptyBox(ico,txt,btnLabel,onclick){
-  return `<div class="empty"><div class="ico">${ico}</div>${txt}${btnLabel?`<div><button class="btn" onclick="${onclick}">${btnLabel}</button></div>`:''}</div>`;
+  const icon=ICONS[ico]?`<svg viewBox="0 0 24 24">${ICONS[ico]}</svg>`:ico;
+  return `<div class="empty"><div class="ico">${icon}</div>${txt}${btnLabel?`<div><button class="btn" onclick="${onclick}">${I('plus')}${btnLabel}</button></div>`:''}</div>`;
 }
 function bookingRow(b){
   const nights=nightsBetween(b.checkin,b.checkout);
@@ -475,8 +557,8 @@ function bookingRow(b){
     <div class="booking-rowinfo"><b>${b.guest}</b><div class="svc">${fmtDay(b.checkin)} → ${fmtDay(b.checkout)} · ${nights} noche(s) · ${b.guests} pers.</div></div>
     <span class="pill ${b.status}">${STLABEL[b.status]}</span>
     <b>${b.total}€</b>
-    ${b.status==='solic'?`<button class="btn sm" onclick="confirmBooking(${b.id})">✓ Confirmar</button>`:''}
-    <button class="btn ghost sm" onclick="openBookingModal(${b.id})">⋯</button></div>`;
+    ${b.status==='solic'?`<button class="btn sm" onclick="confirmBooking(${b.id})">${I('check')} Confirmar</button>`:''}
+    <button class="btn ghost sm" onclick="openBookingModal(${b.id})">Ver</button></div>`;
 }
 
 /* ---------------- Calendario ---------------- */
@@ -506,21 +588,21 @@ function renderCalendario(){
 
   let html=`<div class="calwrap"><div class="calmain">
     <div class="calhead">
-      <div class="calnav"><button class="btn ghost sm" onclick="calMove(-1)">‹</button>
+      <div class="calnav"><button class="btn ghost sm" onclick="calMove(-1)" aria-label="Mes anterior">${I('chevL')}</button>
       <button class="btn ghost sm" onclick="calToday()">Hoy</button></div>
       <div class="mtitle">${monthName}</div>
-      <div class="calnav"><button class="btn ghost sm" onclick="calMove(1)">›</button></div>
+      <div class="calnav"><button class="btn ghost sm" onclick="calMove(1)" aria-label="Mes siguiente">${I('chevR')}</button></div>
     </div>
     <div class="calgrid">
       ${['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map(d=>`<div class="dow">${d}</div>`).join('')}
       ${cells}
     </div>
     <div class="legend">
-      <span><i style="background:var(--surface2);border:1px solid var(--border)"></i>Libre</span>
-      <span><i style="background:rgba(52,199,123,.4)"></i>Reservado</span>
-      <span><i style="background:rgba(232,162,58,.4)"></i>Solicitada</span>
-      <span><i style="background:rgba(139,165,150,.3)"></i>Bloqueado</span>
-      <span><i style="background:rgba(74,157,232,.4)"></i>Booking/Airbnb (iCal)</span>
+      <span><i style="background:var(--surface2);border-color:var(--border)"></i>Libre</span>
+      <span><i style="background:rgba(47,181,116,.3);border-color:color-mix(in srgb,var(--accent) 50%,transparent)"></i>Reservado</span>
+      <span><i style="background:rgba(224,166,74,.3);border-color:color-mix(in srgb,var(--amber) 50%,transparent)"></i>Solicitada</span>
+      <span><i style="background:var(--surface3);border-color:var(--border)"></i>Bloqueado</span>
+      <span><i style="background:rgba(90,166,230,.3);border-color:color-mix(in srgb,var(--blue) 50%,transparent)"></i>Booking/Airbnb (iCal)</span>
     </div>
   </div>
   <div class="calside"><div class="card"><div class="head"><h2>Acciones</h2></div><div class="body" style="padding:14px">`;
@@ -533,11 +615,11 @@ function renderCalendario(){
     }
     html+=`<button class="btn ghost sm" style="width:100%" onclick="cancelPick()">Cancelar selección</button>`;
   } else {
-    html+=`<button class="btn" style="width:100%;justify-content:center;margin-bottom:8px" onclick="startPick()">📅 Reservar por calendario</button>
+    html+=`<button class="btn" style="width:100%;justify-content:center;margin-bottom:8px" onclick="startPick()">${I('cal')} Reservar por calendario</button>
     <button class="btn ghost sm" style="width:100%;justify-content:center;margin-bottom:8px" onclick="openBookingModal()">+ Nueva reserva (manual)</button>
     <p class="hint" style="margin-bottom:6px">Bloquea días (mantenimiento, uso propio):</p>
-    <button class="btn ghost sm" style="width:100%;justify-content:center;margin-bottom:8px" onclick="openBlockModal()">🔒 Bloquear / liberar días</button>
-    <button class="btn blue sm" style="width:100%;justify-content:center" onclick="openIcalModal()">🔄 Sincronizar con Booking/Airbnb (iCal)${isPro()?'':' 🔒'}</button>`;
+    <button class="btn ghost sm" style="width:100%;justify-content:center;margin-bottom:8px" onclick="openBlockModal()">${I('lock')} Bloquear / liberar días</button>
+    <button class="btn blue sm" style="width:100%;justify-content:center" onclick="openIcalModal()">${I('sync')} Sincronizar con Booking/Airbnb (iCal)${isPro()?'':' '+I('lock')}</button>`;
   }
   html+=`</div></div>
   <div class="card"><div class="head"><h2>Estancias del mes</h2></div><div class="body" style="padding:6px">`;
@@ -558,27 +640,27 @@ function dayClick(iso){
   if(!pickMode){ // sin modo: si hay reserva ese día, abrir; si libre, info
     const b=db.bookings.find(x=>x.status!=='canc'&&rangeNights(x.checkin,x.checkout).includes(iso));
     if(b){openBookingModal(b.id);return;}
-    if(db.blocked.includes(iso)){toast('Día bloqueado. Usa "Bloquear / liberar días" para liberarlo.','🔒');return;}
+    if(db.blocked.includes(iso)){toast('Día bloqueado. Usa "Bloquear / liberar días" para liberarlo.','lock');return;}
     const ex=externalAt(iso);
-    if(ex){toast('Ocupado en '+(ex.source||'OTA')+' (importado por iCal): '+(ex.summary||'reserva externa'),'🔵');return;}
-    toast(`${fmtDayFull(iso)} libre · ${priceForNight(iso)}€/noche`,'🟢');return;
+    if(ex){toast('Ocupado en '+(ex.source||'OTA')+' (importado por iCal): '+(ex.summary||'reserva externa'),'');return;}
+    toast(`${fmtDayFull(iso)} libre · ${priceForNight(iso)}€/noche`,'');return;
   }
   const st=dayState(iso);
   if(!pickMode.checkin){
-    if(st!=='libre'){toast('Ese día no está libre. Elige una entrada disponible.','⚠️');return;}
+    if(st!=='libre'){toast('Ese día no está libre. Elige una entrada disponible.','');return;}
     pickMode.checkin=iso;pickMode.hover=null;render();return;
   }
   // segundo clic = salida
-  if(iso<=pickMode.checkin){toast('La salida debe ser posterior a la entrada.','⚠️');return;}
+  if(iso<=pickMode.checkin){toast('La salida debe ser posterior a la entrada.','');return;}
   const conflict=overlaps(pickMode.checkin,iso,null);
-  if(conflict){toast('Ese rango choca con '+(conflict.guest||'una reserva')+'.','⛔');return;}
+  if(conflict){toast('Ese rango choca con '+(conflict.guest||'una reserva')+'.','');return;}
   const ci=pickMode.checkin;pickMode=null;
   openBookingModal(0,ci,iso);
 }
 
 /* ---------------- Bloqueo de días ---------------- */
 function openBlockModal(){
-  openModal(`<div class="mhead"><h3>🔒 Bloquear / liberar días</h3><button class="x" onclick="closeModal()">×</button></div>
+  openModal(`<div class="mhead"><h3>Bloquear o liberar días</h3><button class="x" onclick="closeModal()">×</button></div>
     <div class="mbody">
       <p class="hint" style="margin-bottom:10px">Marca días no disponibles (uso propio, mantenimiento). No se podrán reservar.</p>
       <div class="row2"><div><label>Desde</label><input type="date" id="bl_from" value="${todayISO()}"></div>
@@ -594,12 +676,12 @@ function blRange(){const f=$('#bl_from').value,t=$('#bl_to').value;const err=$('
 function bloquearDias(){const days=blRange();if(!days)return;
   let blocked=0;
   for(const d of days){
-    if(dayState(d)==='reservado'||dayState(d)==='solic'){toast('Hay días con reserva en ese rango. Cancela la reserva primero.','⛔');return;}
+    if(dayState(d)==='reservado'||dayState(d)==='solic'){toast('Hay días con reserva en ese rango. Cancela la reserva primero.','');return;}
     if(!db.blocked.includes(d)){db.blocked.push(d);blocked++;}
   }
-  save();closeModal();render();toast(`${blocked} día(s) bloqueados`,'🔒');}
+  save();closeModal();render();toast(`${blocked} día(s) bloqueados`,'lock');}
 function liberarDias(){const days=blRange();if(!days)return;
-  db.blocked=db.blocked.filter(d=>!days.includes(d));save();closeModal();render();toast('Días liberados','🔓');}
+  db.blocked=db.blocked.filter(d=>!days.includes(d));save();closeModal();render();toast('Días liberados','check');}
 
 /* ---------------- Sincronización iCal (Booking/Airbnb) ---------------- */
 /* Parser .ics minimalista: extrae VEVENT con DTSTART/DTEND (formato YYYYMMDD) + SUMMARY.
@@ -621,7 +703,7 @@ function parseIcs(text,source){
 function openIcalModal(){
   if(!isPro()){openPaywall('La sincronización con Booking/Airbnb (iCal) está disponible en Pro. Evita el doble-booking entre canales automáticamente.');return;}
   const ext=db.external||[];
-  openModal(`<div class="mhead"><h3>🔄 Sincronizar con Booking/Airbnb (iCal)</h3><button class="x" onclick="closeModal()">×</button></div>
+  openModal(`<div class="mhead"><h3>Sincronizar con Booking/Airbnb (iCal)</h3><button class="x" onclick="closeModal()">×</button></div>
     <div class="mbody">
       <p class="hint" style="margin-bottom:12px"><b>Importar:</b> pega el contenido del archivo .ics que te dan Booking o Airbnb (Calendario → Exportar/Sincronizar). Bloqueará en tu calendario las fechas ya ocupadas en esas plataformas para que nadie reserve dos veces.</p>
       <div class="row2"><div><label>Plataforma</label><select id="ic_src"><option value="Booking">Booking</option><option value="Airbnb">Airbnb</option><option value="Otra OTA">Otra OTA</option></select></div>
@@ -634,12 +716,12 @@ function openIcalModal(){
         <div style="margin-top:8px">${ext.length?ext.map((e,i)=>`<div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:5px 0">
           <span class="pill" style="background:rgba(74,157,232,.18);color:var(--blue)">${e.source}</span>
           <span style="flex:1">${fmtDay(e.checkin)} → ${fmtDay(e.checkout)} ${e.summary?'· '+e.summary:''}</span>
-          <button class="btn ghost sm" onclick="delExternal(${i})">✕</button></div>`).join(''):'<span class="hint">Aún no has importado fechas externas.</span>'}</div>
+          <button class="btn ghost sm" onclick="delExternal(${i})">${I('x')}</button></div>`).join(''):'<span class="hint">Aún no has importado fechas externas.</span>'}</div>
       </div>
       <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px">
         <b style="font-size:14px">Exportar tu calendario</b>
         <p class="hint" style="margin:6px 0 10px">Genera tu propio .ics (reservas confirmadas + días bloqueados) para pegarlo en Booking/Airbnb y que ellos no vendan tus fechas directas.</p>
-        <div class="seg"><button class="btn ghost sm" onclick="copyMyIcs()">📋 Copiar mi .ics</button><button class="btn ghost sm" onclick="downloadMyIcs()">⬇️ Descargar .ics</button></div>
+        <div class="seg"><button class="btn ghost sm" onclick="copyMyIcs()">${I('copy')} Copiar mi .ics</button><button class="btn ghost sm" onclick="downloadMyIcs()">${I('download')} Descargar .ics</button></div>
       </div>
     </div>
     <div class="mfoot"><button class="btn ghost" onclick="closeModal()">Cerrar</button><button class="btn blue" onclick="importIcs()">Importar fechas</button></div>`);
@@ -665,7 +747,7 @@ function importIcs(){
   }
   if(url&&!db.icalUrls.includes(url))db.icalUrls.push(url);
   save();
-  ok.textContent=`✓ ${added} bloqueo(s) importados de ${src}.`+(conflicts?` ⚠️ ${conflicts} solapan con reservas directas tuyas — revísalo.`:'');
+  ok.textContent=`${added} bloqueo(s) importados de ${src}.`+(conflicts?` ${conflicts} solapan con reservas directas tuyas — revísalo.`:'');
   ok.style.display='block';
   setTimeout(()=>{openIcalModal();},900);
   render();
@@ -680,10 +762,10 @@ function buildMyIcs(){
   db.blocked.slice().sort().forEach((d,i)=>ev(d,addDays(d,1),'Bloqueado','blk'+i));
   s+='END:VCALENDAR';return s;
 }
-function copyMyIcs(){const t=buildMyIcs();navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>toast('.ics copiado al portapapeles','📋'),()=>fallbackCopy(t));}
+function copyMyIcs(){const t=buildMyIcs();navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>toast('.ics copiado al portapapeles','copy'),()=>fallbackCopy(t));}
 function downloadMyIcs(){const t=buildMyIcs();const blob=new Blob([t],{type:'text/calendar'});const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);a.download='casadirecta.ics';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);toast('.ics descargado','⬇️');}
-function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('.ics copiado','📋');}catch(e){toast('Copia manual: revisa la consola','⚠️');}document.body.removeChild(ta);}
+  a.href=URL.createObjectURL(blob);a.download='casadirecta.ics';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);toast('.ics descargado','download');}
+function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('.ics copiado','copy');}catch(e){toast('Copia manual: revisa la consola','');}document.body.removeChild(ta);}
 
 /* ---------------- Reservas ---------------- */
 let resFilter='all';
@@ -696,22 +778,22 @@ function renderReservas(){
   const f=(id,lbl)=>`<button class="btn ${resFilter===id?'':'ghost'} sm" onclick="resFilter='${id}';render()">${lbl}</button>`;
   let html=`<div class="seg" style="margin-bottom:16px">${f('all','Todas')}${f('solic','Solicitadas')}${f('conf','Confirmadas')}${f('canc','Canceladas')}</div>`;
   html+=`<div class="card"><div class="body" style="padding:0"><table><thead><tr><th>Huésped</th><th>Fechas</th><th>Noches</th><th>Estado</th><th>Total</th><th></th></tr></thead><tbody>`;
-  if(!list.length){html+=`<tr><td colspan="6">${emptyBox('🗒️','Sin reservas en este filtro.','+ Nueva reserva','openBookingModal()')}</td></tr>`;}
+  if(!list.length){html+=`<tr><td colspan="6">${emptyBox('reservas','Sin reservas en este filtro.','Nueva reserva','openBookingModal()')}</td></tr>`;}
   list.forEach(b=>{const nights=nightsBetween(b.checkin,b.checkout);
     html+=`<tr><td><div style="display:flex;align-items:center;gap:11px"><span class="avatar">${initials(b.guest)}</span><div><b>${b.guest}</b><div class="hint" style="margin:0">${b.guests} pers. · ${b.source==='directa'?'directa':b.source}</div></div></div></td>
       <td>${fmtDay(b.checkin)} → ${fmtDay(b.checkout)}</td><td>${nights}</td>
-      <td><span class="pill ${b.status}">${STLABEL[b.status]}</span>${b.status!=='canc'?(b.depositPaid?'<span class="pill conf" style="margin-left:5px">💶 Señal ✓</span>':'<span class="pill solic" style="margin-left:5px">Señal pend.</span>'):''}</td><td><b>${b.total}€</b></td>
+      <td><span class="pill ${b.status}">${STLABEL[b.status]}</span>${b.status!=='canc'?(b.depositPaid?'<span class="pill conf" style="margin-left:5px">Señal cobrada</span>':'<span class="pill solic" style="margin-left:5px">Señal pend.</span>'):''}</td><td><b>${b.total}€</b></td>
       <td style="text-align:right;white-space:nowrap">
-        ${b.status==='solic'?`<button class="btn sm" onclick="confirmBooking(${b.id})">✓</button> <button class="btn ghost sm" onclick="cancelBooking(${b.id})">✕</button> `:''}
+        ${b.status==='solic'?`<button class="btn sm" onclick="confirmBooking(${b.id})">${I('check')}</button> <button class="btn ghost sm" onclick="cancelBooking(${b.id})">${I('x')}</button> `:''}
         <button class="btn ghost sm" onclick="openBookingModal(${b.id})">Ver</button></td></tr>`;});
   html+=`</tbody></table></div></div>`;
   $('#content').innerHTML=html;
 }
 function confirmBooking(id){const b=db.bookings.find(x=>x.id===id);if(!b)return;
   const conflict=overlaps(b.checkin,b.checkout,b.id);
-  if(conflict&&conflict.status==='conf'){toast('No se puede confirmar: choca con '+conflict.guest,'⛔');return;}
-  b.status='conf';save();render();toast('Reserva confirmada · fechas bloqueadas','✅');}
-function cancelBooking(id){const b=db.bookings.find(x=>x.id===id);if(!b)return;b.status='canc';save();render();toast('Reserva cancelada · fechas liberadas','🗑️');}
+  if(conflict&&conflict.status==='conf'){toast('No se puede confirmar: choca con '+conflict.guest,'');return;}
+  b.status='conf';save();render();toast('Reserva confirmada · fechas bloqueadas','check');}
+function cancelBooking(id){const b=db.bookings.find(x=>x.id===id);if(!b)return;b.status='canc';save();render();toast('Reserva cancelada · fechas liberadas','');}
 
 /* ---------------- Modal reserva ---------------- */
 function openBookingModal(id,preCi,preCo){
@@ -758,13 +840,13 @@ function saveBooking(id){
   if(co<=ci)return fail('La salida debe ser posterior a la entrada.');
   if(guests>db.property.maxGuests)return fail('Supera el aforo máximo ('+db.property.maxGuests+').');
   const conflict=overlaps(ci,co,id);
-  if(conflict){return fail('⛔ Esas fechas chocan con '+(conflict.guest||'otra reserva')+'. Evita el doble-booking.');}
+  if(conflict){return fail('Esas fechas chocan con '+(conflict.guest||'otra reserva')+'. Evita el doble-booking.');}
   const total=stayPrice(ci,co);
   if(id){const b=db.bookings.find(x=>x.id===id);Object.assign(b,{guest,phone,guests,checkin:ci,checkout:co,note,total});}
   else{db.bookings.push({id:db.nextId++,guest,phone,guests,checkin:ci,checkout:co,status:'conf',total,source:'directa',note,depositPaid:false,depositAmount:0});}
-  save();closeModal();render();toast(id?'Reserva actualizada':'Reserva creada · '+total+'€','✅');
+  save();closeModal();render();toast(id?'Reserva actualizada':'Reserva creada · '+total+'€','check');
 }
-function delBooking(id){db.bookings=db.bookings.filter(b=>b.id!==id);save();closeModal();render();toast('Reserva eliminada','🗑️');}
+function delBooking(id){db.bookings=db.bookings.filter(b=>b.id!==id);save();closeModal();render();toast('Reserva eliminada','');}
 
 /* ---------------- Señal / depósito (cobro) ---------------- */
 function depositAmountFor(b){return Math.round((b.total||0)*(db.settings.depositPct||0)/100);}
@@ -772,35 +854,35 @@ function depositBox(b){
   const sug=depositAmountFor(b);
   if(b.depositPaid){
     return `<div style="background:rgba(52,199,123,.12);border:1px solid var(--accent);border-radius:10px;padding:12px 14px;margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <b style="color:var(--accent)">✓ Señal cobrada: ${b.depositAmount||sug}€</b>
+      <b style="color:var(--accent)">Señal cobrada: ${b.depositAmount||sug}€</b>
       <button class="btn ghost sm" style="margin-left:auto" onclick="unmarkDeposit(${b.id})">Marcar pendiente</button></div>`;
   }
   return `<div style="background:rgba(232,162,58,.1);border:1px solid rgba(232,162,58,.4);border-radius:10px;padding:12px 14px;margin-top:12px">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><b style="color:var(--amber)">Señal pendiente (${db.settings.depositPct||0}%): ${sug}€</b></div>
     <div class="seg" style="margin-top:10px">
-      <button class="btn sm" onclick="markDepositPaid(${b.id})">✓ Registrar señal cobrada</button>
-      <button class="btn ghost sm" onclick="sendDepositLink(${b.id})">🔗 ${isPro()?'Enviar enlace de pago':'Enlace de pago (Pro)'}</button>
+      <button class="btn sm" onclick="markDepositPaid(${b.id})">${I('check')} Registrar señal cobrada</button>
+      <button class="btn ghost sm" onclick="sendDepositLink(${b.id})">${I('link')} ${isPro()?'Enviar enlace de pago':'Enlace de pago (Pro)'}</button>
     </div></div>`;
 }
 function markDepositPaid(id){const b=db.bookings.find(x=>x.id===id);if(!b)return;b.depositPaid=true;b.depositAmount=depositAmountFor(b);save();
-  if($('#modalBg').classList.contains('show'))openBookingModal(id);render();toast('Señal registrada como cobrada · '+b.depositAmount+'€','💶');}
+  if($('#modalBg').classList.contains('show'))openBookingModal(id);render();toast('Señal registrada como cobrada · '+b.depositAmount+'€','check');}
 function unmarkDeposit(id){const b=db.bookings.find(x=>x.id===id);if(!b)return;b.depositPaid=false;save();openBookingModal(id);render();toast('Señal marcada como pendiente');}
 function sendDepositLink(id){const b=db.bookings.find(x=>x.id===id);if(!b)return;
   if(!isPro()){openPaywall('El cobro de la señal con enlace de pago online está en Pro. Cobra por adelantado para asegurar la reserva.');return;}
   const amount=depositAmountFor(b);
   const msg=encodeURIComponent(`Hola ${b.guest}, para confirmar tu reserva en ${db.property.name} (${fmtDay(b.checkin)} → ${fmtDay(b.checkout)}) abona la señal de ${amount}€ en este enlace: [enlace de pago]. ¡Gracias!`);
   const phone=(b.phone||'').replace(/[^\d+]/g,'').replace(/^\+/,'');
-  if(/^\d{6,}$/.test(phone)){window.open(`https://wa.me/${phone}?text=${msg}`,'_blank');toast('Mensaje de cobro abierto en WhatsApp','📲');}
-  else{toast('Sin teléfono válido: copia el mensaje desde las notas','⚠️');}
+  if(/^\d{6,}$/.test(phone)){window.open(`https://wa.me/${phone}?text=${msg}`,'_blank');toast('Mensaje de cobro abierto en WhatsApp','send');}
+  else{toast('Sin teléfono válido: copia el mensaje desde las notas','');}
 }
 
 /* ---------------- Mi web (editor) ---------------- */
 function renderWeb(){
   const p=db.property;
-  let html=`<div class="value"><div class="big">🌐 Esta es tu página pública. Compártela en Instagram, Google y WhatsApp para recibir <b>reservas directas sin comisión</b>.</div>
-    <div class="seg"><button class="btn" onclick="openPublicSite()">👁️ Ver como un cliente</button>
-      <button class="btn ghost" onclick="copyWebLink()">🔗 Copiar enlace</button>
-      <button class="btn ghost" onclick="openPublicFullscreen()">↗ Abrir a pantalla completa</button></div></div>`;
+  let html=`<div class="value"><div class="big">${I('globe')} Esta es tu página pública. Compártela en Instagram, Google y WhatsApp para recibir <b>reservas directas sin comisión</b>.</div>
+    <div class="seg"><button class="btn" onclick="openPublicSite()">${I('eye')} Ver como un cliente</button>
+      <button class="btn ghost" onclick="copyWebLink()">${I('link')} Copiar enlace</button>
+      <button class="btn ghost" onclick="openPublicFullscreen()">${I('external')} Abrir a pantalla completa</button></div></div>`;
   html+=`<div class="card"><div class="head"><h2>Datos del alojamiento</h2><button class="btn sm" onclick="openPropertyModal()">Editar</button></div>
     <div class="body" style="padding:16px 18px">
       <div style="display:flex;gap:14px;flex-wrap:wrap">
@@ -816,11 +898,11 @@ function renderWeb(){
   html+=`<div class="card"><div class="head"><h2>Fotos (${p.photos.length}${isPro()?'':'/'+3})</h2><button class="btn sm" onclick="openPhotoModal()">Gestionar fotos</button></div>
     <div class="body" style="padding:16px 18px"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
     ${p.photos.map(u=>`<img src="${u}" style="width:100%;height:90px;object-fit:cover;border-radius:8px;background:var(--surface2)" onerror="this.style.opacity=.3">`).join('')||'<span class="hint">Sin fotos</span>'}</div>
-    ${!isPro()?`<p class="paywall" style="margin-top:14px"><span>📷 En Free puedes mostrar hasta <b>3 fotos</b>. Con Pro, galería ilimitada.</span></p>`:''}</div></div>`;
+    ${!isPro()?`<p class="paywall" style="margin-top:14px"><span>En Free puedes mostrar hasta <b>3 fotos</b>. Con Pro, galería ilimitada.</span></p>`:''}</div></div>`;
   // marca de agua / dominio
   html+=`<div class="card lock-card"><div class="head"><h2>Marca y dominio</h2></div><div class="body" style="padding:16px 18px">
     <p class="hint" style="margin:0">Quita el "Hecho con CasaDirecta" de tu web y usa tu propio dominio/branding para una imagen 100% profesional.</p></div>
-    ${!isPro()?`<div class="lock-ov"><div class="lk">🔒</div><b>Sin marca + dominio propio</b><p>Elimina la marca de agua y conecta tu dominio. Disponible en Pro.</p><button class="btn" onclick="setView('suscripcion')">Desbloquear con Pro</button></div>`:''}</div>`;
+    ${!isPro()?`<div class="lock-ov"><div class="lk">${I('lock')}</div><b>Sin marca + dominio propio</b><p>Elimina la marca de agua y conecta tu dominio. Disponible en Pro.</p><button class="btn" onclick="setView('suscripcion')">Desbloquear con Pro</button></div>`:''}</div>`;
   $('#content').innerHTML=html;
 }
 function openPropertyModal(){
@@ -861,7 +943,7 @@ function openPhotoModal(){
 function photoRow(u,i){return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
   <img src="${u}" style="width:48px;height:48px;object-fit:cover;border-radius:7px;background:var(--surface2)" onerror="this.style.opacity=.3">
   <input type="text" value="${u.replace(/"/g,'&quot;')}" style="flex:1" onchange="editPhoto(${i},this.value)">
-  <button class="btn ghost sm" onclick="delPhoto(${i})">✕</button></div>`;}
+  <button class="btn ghost sm" onclick="delPhoto(${i})">${I('x')}</button></div>`;}
 function addPhoto(){const u=$('#newPhoto').value.trim();const err=$('#ph_err');
   if(!/^https?:\/\//.test(u)){err.textContent='Pon una URL válida (http...).';err.style.display='block';return;}
   if(!isPro()&&db.property.photos.length>=3){err.textContent='Límite de 3 fotos en Free. Sube a Pro para más.';err.style.display='block';return;}
@@ -875,11 +957,11 @@ function openPublicSite(){
   const photos=isPro()?p.photos:p.photos.slice(0,3);
   const hero=photos[0]||'';
   const minPrice=Math.min(...db.seasons.map(s=>s.price));
-  openModal(`<div class="mhead"><h3>👁️ Vista previa de tu web pública</h3><button class="x" onclick="closeModal()">×</button></div>
+  openModal(`<div class="mhead"><h3>Vista previa de tu web pública</h3><button class="x" onclick="closeModal()">×</button></div>
     <div class="mbody" style="padding:14px">
       <div class="pub">
         <div class="hero" style="background-image:url('${hero}')"><div class="ov"></div>
-          <div class="htxt"><h2>${p.name}</h2><div class="loc">📍 ${p.location}</div></div></div>
+          <div class="htxt"><h2>${p.name}</h2><div class="loc">${I('pin')} ${p.location}</div></div></div>
         <div class="pbody">
           <div class="feats">${p.features.slice(0,8).map(f=>`<span>${f}</span>`).join('')}</div>
           <p class="desc">${p.desc}</p>
@@ -893,7 +975,7 @@ function openPublicSite(){
           <div class="pp">Desde <b>${minPrice}€</b> / noche</div>
           <button onclick="openGuestBooking()">Comprobar disponibilidad</button>
         </div>
-        ${isPro()?'':'<div class="wm">Hecho con 🏡 CasaDirecta — crea tu web de reservas</div>'}
+        ${isPro()?'':'<div class="wm">Hecho con CasaDirecta — crea tu web de reservas</div>'}
       </div>
     </div>`);
   $('#modal').classList.add('wide');
@@ -901,7 +983,7 @@ function openPublicSite(){
 function webSlug(){return (db.property.name||'mi-casa').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 function webLink(){return `https://casadirecta.app/${webSlug()}`;}
 function copyWebLink(){const url=webLink();
-  const done=()=>toast('Enlace copiado: '+url,'🔗');
+  const done=()=>toast('Enlace copiado: '+url,'link');
   if(navigator.clipboard)navigator.clipboard.writeText(url).then(done,()=>{fallbackCopy(url);});else fallbackCopy(url);}
 function publicSiteHTML(){
   const p=db.property;const photos=isPro()?p.photos:p.photos.slice(0,3);const hero=photos[0]||'';
@@ -921,7 +1003,7 @@ function publicSiteHTML(){
   .bar b{color:#7fe0a8;font-size:22px}.bar button{background:#34c77b;color:#06170e;border:none;padding:12px 22px;border-radius:10px;font-weight:800;font-size:15px;cursor:pointer}
   .wm{text-align:center;font-size:12px;color:#9a8f7e;padding:14px;background:#efe8dd}.demo{background:#fff3cd;color:#7a5b00;text-align:center;padding:8px;font-size:13px}</style></head>
   <body><div class="demo">Vista pública de demostración · en producción se sirve en ${esc(webLink())}</div>
-  <div class="hero"><div class="ov"></div><div class="t"><h1>${esc(p.name)}</h1><div class="loc">📍 ${esc(p.location)}</div></div></div>
+  <div class="hero"><div class="ov"></div><div class="t"><h1>${esc(p.name)}</h1><div class="loc"><svg viewBox="0 0 24 24" width="14" height="14" style="vertical-align:-2px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg> ${esc(p.location)}</div></div></div>
   <div class="wrap">
     <div class="feats">${p.features.slice(0,12).map(f=>`<span>${esc(f)}</span>`).join('')}</div>
     <p class="desc">${esc(p.desc)}</p>
@@ -931,14 +1013,14 @@ function publicSiteHTML(){
     <h2>Reserva directa, sin comisiones</h2><p class="desc" style="font-size:14px">Solicita tus fechas y te confirmamos disponibilidad. Aforo hasta ${p.maxGuests} huéspedes.</p>
   </div>
   <div class="bar"><div>Desde <b>${minPrice}€</b> / noche</div><button onclick="alert('En la app real, aquí el huésped elige fechas y envía su solicitud. Esta es una previsualización estática.')">Comprobar disponibilidad</button></div>
-  ${isPro()?'':'<div class="wm">Hecho con 🏡 CasaDirecta — crea tu web de reservas directas</div>'}
+  ${isPro()?'':'<div class="wm">Hecho con CasaDirecta — crea tu web de reservas directas</div>'}
   </body></html>`;
 }
 function openPublicFullscreen(){
   const blob=new Blob([publicSiteHTML()],{type:'text/html'});const url=URL.createObjectURL(blob);
   const w=window.open(url,'_blank');
-  if(!w){toast('El navegador bloqueó la pestaña. Permite ventanas emergentes.','⚠️');}
-  else toast('Web pública abierta en una pestaña','↗');
+  if(!w){toast('El navegador bloqueó la pestaña. Permite ventanas emergentes.','');}
+  else toast('Web pública abierta en una pestaña','external');
   setTimeout(()=>URL.revokeObjectURL(url),60000);
 }
 function openGuestBooking(){
@@ -963,9 +1045,9 @@ function guestCalc(){
   const ci=$('#g_ci').value,co=$('#g_co').value;const box=$('#g_calc');if(!box)return;
   if(!ci||!co||co<=ci){box.innerHTML='<span class="hint" style="margin:0">Elige fechas válidas.</span>';return;}
   const conflict=overlaps(ci,co,null);
-  if(conflict){box.innerHTML=`<b style="color:var(--red)">⛔ No disponible en esas fechas.</b><div class="hint" style="margin-top:4px">Prueba otras fechas libres en el calendario.</div>`;return;}
+  if(conflict){box.innerHTML=`<b style="color:var(--red)">No disponible en esas fechas.</b><div class="hint" style="margin-top:4px">Prueba otras fechas libres en el calendario.</div>`;return;}
   const nights=nightsBetween(ci,co);const total=stayPrice(ci,co);const deposit=Math.round(total*(db.settings.depositPct||0)/100);
-  box.innerHTML=`<div style="display:flex;justify-content:space-between"><b style="color:var(--accent)">✓ Disponible</b><span>${nights} noche(s)</span></div>
+  box.innerHTML=`<div style="display:flex;justify-content:space-between"><b style="color:var(--accent)">Disponible</b><span>${nights} noche(s)</span></div>
     <div style="display:flex;justify-content:space-between;font-size:16px;margin-top:8px"><b>Total</b><b>${total}€</b></div>
     <div class="hint" style="margin-top:4px">Señal para reservar: <b>${deposit}€</b> (resto a la llegada)</div>`;
 }
@@ -987,14 +1069,14 @@ function submitGuestBooking(){
   db.bookings.push({id:db.nextId++,guest:name,phone:contact,guests,checkin:ci,checkout:co,status:'solic',total,source:'directa',note:'Solicitud desde la web pública',depositPaid:false,depositAmount:0});
   if(!isPro())db.counters.reqCount++;
   save();
-  ok.textContent='✓ ¡Solicitud enviada! El dueño la verá en su panel de Reservas y la confirmará.';ok.style.display='block';
-  setTimeout(()=>{closeModal();$('#modal').classList.remove('wide');setView('reservas');toast('Nueva solicitud de reserva recibida','📩');},1400);
+  ok.textContent='¡Solicitud enviada! El dueño la verá en su panel de Reservas y la confirmará.';ok.style.display='block';
+  setTimeout(()=>{closeModal();$('#modal').classList.remove('wide');setView('reservas');toast('Nueva solicitud de reserva recibida','bell');},1400);
 }
 
 /* ---------------- Precios y temporadas ---------------- */
 const MONTHS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 function renderPrecios(){
-  let html=`<div class="value"><div class="big">💶 Define un precio por temporada y asígnalo a cada mes. El total de cada reserva se calcula <b>automáticamente</b> sumando las noches.</div></div>`;
+  let html=`<div class="value"><div class="big">${I('euro')} Define un precio por temporada y asígnalo a cada mes. El total de cada reserva se calcula <b>automáticamente</b> sumando las noches.</div></div>`;
   html+=`<div class="card"><div class="head"><h2>Precios por temporada</h2></div><div class="body" style="padding:16px 18px">`;
   db.seasons.forEach(s=>{
     html+=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap">
@@ -1028,9 +1110,9 @@ function renderSuscripcion(){
   const p=db.plan;
   const card=(id,name,price,sub,feats,feat)=>`<div class="price ${feat?'feat':''}">${feat?'<div class="tag">MÁS ELEGIDO</div>':''}
     <h3>${name}</h3><div class="amt">${price}<span>${price==='0€'?'':'/mes'}</span></div><div class="hint">${sub}</div>
-    <ul>${feats.map(f=>`<li class="${f[0]?'':'off'}"><span class="c">${f[0]?'✓':'·'}</span>${f[1]}</li>`).join('')}</ul>
+    <ul>${feats.map(f=>`<li class="${f[0]?'':'off'}"><span class="c">${f[0]?I('check'):''}</span>${f[1]}</li>`).join('')}</ul>
     ${p===id?'<button class="btn ghost" disabled>Plan actual</button>':`<button class="btn ${feat?'':'ghost'}" onclick="openCheckout('${id}','${name}','${price}')">${id==='free'?'Bajar a Free':'Elegir '+name}</button>`}</div>`;
-  let html=`<div class="value"><div class="big">💡 Una sola reserva directa de 600€ te ahorra ~<b>96€</b> de comisión. CasaDirecta Pro cuesta <b>29€/mes</b>: se paga solo con la primera reserva.</div></div>
+  let html=`<div class="value"><div class="big">${I('trend')} Una sola reserva directa de 600€ te ahorra ~<b>96€</b> de comisión. CasaDirecta Pro cuesta <b>29€/mes</b>: se paga solo con la primera reserva.</div></div>
   <div class="pricing">
     ${card('free','Free','0€','Prueba la herramienta',[[1,'1 alojamiento'],[1,'Calendario y reservas'],[1,'Web pública (con marca)'],[1,'Hasta 3 fotos'],[1,'Hasta 5 solicitudes web/mes'],[0,'Solicitudes web ilimitadas'],[0,'Sincronización iCal (Booking/Airbnb)'],[0,'Cobro de señal online'],[0,'Sin marca + dominio propio']])}
     ${card('pro','Pro','29€','Para tu casa rural',[[1,'Todo lo de Free'],[1,'Solicitudes web ilimitadas'],[1,'Galería de fotos ilimitada'],[1,'Sin marca de agua + dominio propio'],[1,'Cobro de señal (registro + enlace WhatsApp)'],[1,'Sincronización iCal (Booking/Airbnb)'],[1,'Avisos al huésped por WhatsApp']],true)}
@@ -1047,7 +1129,7 @@ $('#modalBg').addEventListener('click',e=>{if(e.target.id==='modalBg'){closeModa
 
 /* ----- Onboarding + Ajustes ----- */
 function openOnboarding(){
-  openModal(`<div class="mhead"><h3>👋 Bienvenido a CasaDirecta</h3></div>
+  openModal(`<div class="mhead"><h3>Bienvenido a CasaDirecta</h3></div>
     <div class="mbody">
       <p class="hint" style="margin-bottom:14px">Configura tu alojamiento para crear tu web y empezar a recibir reservas directas.</p>
       <label>Nombre del alojamiento</label><input type="text" id="ob_name" placeholder="Ej. Casa Rural El Robledal">
@@ -1056,7 +1138,7 @@ function openOnboarding(){
         <div><label>Precio base (€/noche)</label><input type="number" id="ob_price" value="120" min="1"></div></div>
       <div class="err" id="ob_err"></div>
     </div>
-    <div class="mfoot"><button class="btn" onclick="saveOnboarding()">Empezar →</button></div>`);
+    <div class="mfoot"><button class="btn" onclick="saveOnboarding()">Empezar ${I('arrow')}</button></div>`);
 }
 function saveOnboarding(){
   const name=$('#ob_name').value.trim();
@@ -1069,10 +1151,10 @@ function saveOnboarding(){
   db.seasons=[{id:'baja',name:'Temporada baja',price:Math.round(base*0.75)},
     {id:'media',name:'Temporada media',price:base},
     {id:'alta',name:'Temporada alta',price:Math.round(base*1.35)}];
-  db.settings.onboarded=true;save();closeModal();render();toast('¡Listo! Tu web ya está creada 🚀','🎉');
+  db.settings.onboarded=true;save();closeModal();render();toast('¡Listo! Tu web ya está creada','check');
 }
 function openSettings(){
-  openModal(`<div class="mhead"><h3>⚙️ Ajustes</h3><button class="x" onclick="closeModal()">×</button></div>
+  openModal(`<div class="mhead"><h3>Ajustes</h3><button class="x" onclick="closeModal()">×</button></div>
     <div class="mbody">
       <label>Email de contacto</label><input type="email" id="st_email" value="${db.settings.email||''}" placeholder="tu@email.com">
       <p class="hint" style="margin-top:10px">La limpieza y el % de señal se configuran en <a href="#" onclick="closeModal();setView('precios');return false" style="color:var(--accent)">Precios y temporadas</a>.</p>
@@ -1085,15 +1167,15 @@ function saveSettings(){
   db.settings.email=$('#st_email').value.trim();
   save();closeModal();render();toast('Ajustes guardados');
 }
-function resetDemo(){localStorage.removeItem(LS);db=seed();save();closeModal();calRef=todayISO();setView('dashboard');toast('Datos reiniciados','🔄');}
+function resetDemo(){localStorage.removeItem(LS);db=seed();save();closeModal();calRef=todayISO();setView('dashboard');toast('Datos reiniciados','sync');}
 
 /* ---------------- Paywall + Checkout ---------------- */
 function openPaywall(reason){
-  openModal(`<div class="mhead"><h3>🔒 Sube a Pro</h3><button class="x" onclick="closeModal()">×</button></div>
+  openModal(`<div class="mhead"><h3>Sube a Pro</h3><button class="x" onclick="closeModal()">×</button></div>
     <div class="mbody"><p style="margin-bottom:14px">${reason}</p>
       <p class="hint" style="margin-bottom:6px">Con <b style="color:var(--accent)">Pro (29€/mes)</b>: solicitudes web ilimitadas, galería sin límite, sin marca de agua + dominio propio, cobro de señal online y sincronización con Booking/Airbnb.</p></div>
     <div class="mfoot"><button class="btn ghost" onclick="closeModal()">Ahora no</button>
-      <button class="btn" onclick="openCheckout('pro','Pro','29€')">Pasar a Pro →</button></div>`);
+      <button class="btn" onclick="openCheckout('pro','Pro','29€')">Pasar a Pro ${I('arrow')}</button></div>`);
 }
 function openCheckout(id,name,price){
   if(id==='free'){db.plan='free';save();closeModal();render();toast('Has cambiado a Free');return;}
@@ -1104,7 +1186,7 @@ function openCheckout(id,name,price){
       <div class="row2"><div><label>Caducidad</label><input type="text" id="ck_exp" placeholder="MM/AA" maxlength="5"></div>
         <div><label>CVC</label><input type="text" id="ck_cvc" inputmode="numeric" placeholder="123" maxlength="4"></div></div>
       <div class="err" id="ck_err"></div>
-      <p class="hint" style="margin-top:14px">🔒 Demostración. No se realiza ningún cobro. Integrable con Stripe Checkout en producción.</p></div>
+      <p class="hint" style="margin-top:14px">Demostración. No se realiza ningún cobro. Integrable con Stripe Checkout en producción.</p></div>
     <div class="mfoot"><button class="btn ghost" onclick="closeModal()">Cancelar</button>
       <button class="btn" id="ck_pay" onclick="doPay('${id}','${name}')">Pagar ${price}/mes</button></div>`);
   $('#ck_card').addEventListener('input',e=>{let v=e.target.value.replace(/\D/g,'').slice(0,16);e.target.value=v.replace(/(.{4})/g,'$1 ').trim();});
@@ -1121,7 +1203,7 @@ function doPay(id,name){
   if(cvc.length<3)return fail('CVC incompleto.');
   const btn=$('#ck_pay');btn.textContent='Procesando…';btn.disabled=true;
   setTimeout(()=>{db.plan=id;db.settings.email=email;save();closeModal();render();updatePlanBadge();
-    toast(`¡Bienvenido a ${name}! 🎉 Suscripción activa`,'🎉');},900);
+    toast(`¡Bienvenido a ${name}! Suscripción activa`,'check');},900);
 }
 
 /* ---------------- init ---------------- */
